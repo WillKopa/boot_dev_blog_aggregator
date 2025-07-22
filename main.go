@@ -1,33 +1,44 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"os"
+
 	"github.com/WillKopa/boot_dev_blog_aggregator/internal/config"
 )
+
+type state struct {
+	cfg *config.Config
+}
 
 func main() {
 	gator_config, err := config.Read()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(gator_config)
-	gator_config.SetUser("William")
-
-	gator_config, err = config.Read()
-	if err != nil {
-		log.Fatal(err)
+	// Create Florida
+	gator_state := state{
+		cfg: gator_config,
 	}
 
-	fmt.Println(gator_config)
+	commands := commands{
+		Command_map: map[string]func(*state, command) error{},
+	}
+	commands.register("login", handler_login)
 
-	gator_config.SetUser("")
+	if len(os.Args) < 2 {
+		log.Fatal("Too few args")
+	}
+	cmd_args := os.Args[2:]
 
-	gator_config, err = config.Read()
-	if err != nil {
-		log.Fatal(err)
+	cmd := command{
+		Name: os.Args[1],
+		Args: cmd_args,
 	}
 
-	fmt.Println(gator_config)
+	err = commands.run(&gator_state, cmd)
 
+	if err != nil {
+		log.Fatal("error running command ", os.Args[1], ": ", err)
+	}
 }
