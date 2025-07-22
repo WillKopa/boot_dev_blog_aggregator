@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"context"
+	"fmt"
+	"log"
+)
 
 func handler_login(s *state, cmd command) error {
 	if len(cmd.Args) == 0 {
@@ -8,7 +12,15 @@ func handler_login(s *state, cmd command) error {
 	} else if len(cmd.Args) > 1 {
 		return fmt.Errorf("to many arguments when logging in, expected only username")
 	}
-	err := s.cfg.SetUser(cmd.Args[0])
+	name := cmd.Args[0]
+
+	_, err := s.db.GetUser(context.Background(), name)
+
+	if err != nil {
+		log.Fatal("User ", name, " does not exist")
+	}
+
+	err = s.cfg.SetUser(name)
 
 	if err != nil {
 		return err
