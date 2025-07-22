@@ -1,13 +1,17 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"os"
 
 	"github.com/WillKopa/boot_dev_blog_aggregator/internal/config"
+	"github.com/WillKopa/boot_dev_blog_aggregator/internal/database"
+	_ "github.com/lib/pq"
 )
 
 type state struct {
+	db	*database.Queries
 	cfg *config.Config
 }
 
@@ -16,9 +20,18 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	db, err := sql.Open("postgres", gator_config.DB_url)
+	if err != nil {
+		log.Fatal("error connecting to db: ", err)
+	}
+
+	dbQueries := database.New(db)
+
 	// Create Florida
 	gator_state := state{
 		cfg: gator_config,
+		db: dbQueries,
 	}
 
 	commands := commands{
