@@ -41,6 +41,7 @@ func main() {
 	commands.register("login", handler_login)
 	commands.register("register", handler_register)
 	commands.register("reset", handler_reset)
+	commands.register("users", handler_get_users)
 
 	if len(os.Args) < 2 {
 		log.Fatal("Too few args")
