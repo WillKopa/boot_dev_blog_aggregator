@@ -37,9 +37,10 @@ func main() {
 	commands := commands{
 		Command_map: map[string]func(*state, command) error{},
 	}
-	
+
 	commands.register("login", handler_login)
 	commands.register("register", handler_register)
+	commands.register("reset", handler_reset)
 
 	if len(os.Args) < 2 {
 		log.Fatal("Too few args")
