@@ -34,28 +34,36 @@ func main() {
 		db: dbQueries,
 	}
 
-	commands := commands{
+	cmds := get_commands()
+	cmd := parse_command(os.Args)
+
+	err = cmds.run(&gator_state, cmd)
+
+	if err != nil {
+		log.Fatal("error running command ", os.Args[1], ": ", err)
+	}
+}
+
+func get_commands() *commands {
+	cmds := commands{
 		Command_map: map[string]func(*state, command) error{},
 	}
+	cmds.register("login", handler_login)
+	cmds.register("register", handler_register)
+	cmds.register("reset", handler_reset)
+	cmds.register("users", handler_get_users)
 
-	commands.register("login", handler_login)
-	commands.register("register", handler_register)
-	commands.register("reset", handler_reset)
-	commands.register("users", handler_get_users)
+	return &cmds
+}
 
-	if len(os.Args) < 2 {
+func parse_command(args []string) command {
+	if len(args) < 2 {
 		log.Fatal("Too few args")
 	}
 	cmd_args := os.Args[2:]
 
-	cmd := command{
+	return command{
 		Name: os.Args[1],
 		Args: cmd_args,
-	}
-
-	err = commands.run(&gator_state, cmd)
-
-	if err != nil {
-		log.Fatal("error running command ", os.Args[1], ": ", err)
 	}
 }
