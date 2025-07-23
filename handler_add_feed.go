@@ -9,20 +9,15 @@ import (
 	"github.com/google/uuid"
 )
 
-func handler_add_feed(s *state, cmd command) error {
+func handler_add_feed(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) < 2 {
 		return fmt.Errorf("no name and url were not given when adding feed")
 	} else if len(cmd.Args) > 2 {
 		return fmt.Errorf("to many arguments for adding feed, expected only name and url")
 	}
+
 	name := cmd.Args[0]
 	url := cmd.Args[1]
-	user, err := s.db.GetUser(context.Background(), s.cfg.Current_user_name)
-
-	if err != nil {
-		return fmt.Errorf("unable to get user id from databse: %v", err)
-	}
-
 	params := database.CreateFeedParams{
 		ID: uuid.New(),
 		CreatedAt: time.Now(),
@@ -37,10 +32,14 @@ func handler_add_feed(s *state, cmd command) error {
 		return fmt.Errorf("error creating feed: %v", err)
 	}
 	
-	handler_follow(s, command{
-		Name: cmd.Name,
-		Args: []string{url},
-	})
+	handler_follow(
+		s, 
+		command{
+			Name: cmd.Name,
+			Args: []string{url},
+		}, 
+		user,
+	)
 
 	fmt.Println(feed)
 	return nil

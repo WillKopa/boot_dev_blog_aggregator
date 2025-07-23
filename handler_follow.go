@@ -9,18 +9,13 @@ import (
 	"github.com/google/uuid"
 )
 
-func handler_follow(s *state, cmd command) error {
+func handler_follow(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) == 0 {
 		return fmt.Errorf("no url given")
 	} else if len(cmd.Args) > 1 {
 		return fmt.Errorf("to many arguments when following, expected only url")
 	}
 
-	user, err := s.db.GetUser(context.Background(), s.cfg.Current_user_name)
-	if err != nil {
-		return fmt.Errorf("error getting user id: %v", err)
-	}
-	
 	feed, err := s.db.GetFeedByURL(context.Background(), cmd.Args[0])
 	if err != nil {
 		return fmt.Errorf("error getting feed: %v", err)

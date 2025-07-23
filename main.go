@@ -37,10 +37,10 @@ func get_commands() *commands {
 	cmds.register("reset", handler_reset)
 	cmds.register("users", handler_get_users)
 	cmds.register("agg", handler_aggregator)
-	cmds.register("addfeed", handler_add_feed)
+	cmds.register("addfeed", middlewareLoggedIn(handler_add_feed))
 	cmds.register("feeds", handler_list_feeds)
-	cmds.register("follow", handler_follow)
-	cmds.register("following", handler_following)
+	cmds.register("follow", middlewareLoggedIn(handler_follow))
+	cmds.register("following", middlewareLoggedIn(handler_following))
 
 	return &cmds
 }
