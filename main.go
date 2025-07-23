@@ -36,6 +36,7 @@ func get_commands() *commands {
 	cmds.register("register", handler_register)
 	cmds.register("reset", handler_reset)
 	cmds.register("users", handler_get_users)
+	cmds.register("agg", handler_aggregator)
 
 	return &cmds
 }
