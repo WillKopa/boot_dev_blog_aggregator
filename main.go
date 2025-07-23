@@ -38,6 +38,7 @@ func get_commands() *commands {
 	cmds.register("users", handler_get_users)
 	cmds.register("agg", handler_aggregator)
 	cmds.register("addfeed", handler_add_feed)
+	cmds.register("feeds", handler_list_feeds)
 
 	return &cmds
 }
