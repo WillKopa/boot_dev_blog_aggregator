@@ -14,6 +14,7 @@ WHERE name = $1;
 
 -- name: ResetDB :exec
 DELETE FROM users;
+DELETE FROM feeds;
 
 -- name: GetUsers :many
 SELECT * FROM users;
