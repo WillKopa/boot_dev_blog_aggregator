@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+
+	"github.com/WillKopa/boot_dev_blog_aggregator/internal/database"
 )
 
 func handler_following(s *state, cmd command) error {
@@ -16,8 +18,15 @@ func handler_following(s *state, cmd command) error {
 		return fmt.Errorf("error getting list of feeds you are following: %v", err)
 	}
 
-	print(feeds)
+	print_feed_follows(feeds)
 
 	return nil
+}
+
+func print_feed_follows(feeds []database.GetFeedFollowsForUserRow) {
+	fmt.Printf("You are following\n")
+	for _, feed_follow := range(feeds) {
+		fmt.Printf(" * %s\n", feed_follow.Feed)
+	}
 }
 

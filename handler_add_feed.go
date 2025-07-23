@@ -36,6 +36,12 @@ func handler_add_feed(s *state, cmd command) error {
 	if err != nil {
 		return fmt.Errorf("error creating feed: %v", err)
 	}
+	
+	handler_follow(s, command{
+		Name: cmd.Name,
+		Args: []string{url},
+	})
+
 	fmt.Println(feed)
 	return nil
 }
