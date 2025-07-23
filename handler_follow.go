@@ -20,15 +20,18 @@ func handler_follow(s *state, cmd command) error {
 	if err != nil {
 		return fmt.Errorf("error getting user id: %v", err)
 	}
-	// feed := s.db.GetFeed(context.Background(), cmd.Args[0])
+	
+	feed, err := s.db.GetFeedByURL(context.Background(), cmd.Args[0])
+	if err != nil {
+		return fmt.Errorf("error getting feed: %v", err)
+	}
 
 	params := database.CreateFeedFollowParams{
 		ID: uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		UserID: user.ID,
-		FeedID: uuid.Max,
-		//FeedID: feed.ID,
+		FeedID: feed.ID,
 	}
 
 	feed_follow, err := s.db.CreateFeedFollow(context.Background(), params)
