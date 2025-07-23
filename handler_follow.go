@@ -1,0 +1,43 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/WillKopa/boot_dev_blog_aggregator/internal/database"
+	"github.com/google/uuid"
+)
+
+func handler_follow(s *state, cmd command) error {
+	if len(cmd.Args) == 0 {
+		return fmt.Errorf("no url given")
+	} else if len(cmd.Args) > 1 {
+		return fmt.Errorf("to many arguments when following, expected only url")
+	}
+
+	user, err := s.db.GetUser(context.Background(), s.cfg.Current_user_name)
+	if err != nil {
+		return fmt.Errorf("error getting user id: %v", err)
+	}
+	// feed := s.db.GetFeed(context.Background(), cmd.Args[0])
+
+	params := database.CreateFeedFollowParams{
+		ID: uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		UserID: user.ID,
+		FeedID: uuid.Max,
+		//FeedID: feed.ID,
+	}
+
+	feed_follow, err := s.db.CreateFeedFollow(context.Background(), params)
+	if err != nil {
+		return fmt.Errorf("error creating feed follow %v", err)
+	}
+
+	fmt.Printf("Feed follow: %v\n", feed_follow)
+
+	return nil
+}
+
