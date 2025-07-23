@@ -26,7 +26,7 @@ func handler_following(s *state, cmd command) error {
 func print_feed_follows(feeds []database.GetFeedFollowsForUserRow) {
 	fmt.Printf("You are following\n")
 	for _, feed_follow := range(feeds) {
-		fmt.Printf(" * %s\n", feed_follow.Feed)
+		fmt.Printf(" * %s\n", feed_follow.FeedName)
 	}
 }
 
