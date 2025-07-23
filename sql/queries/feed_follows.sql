@@ -21,4 +21,5 @@ INNER JOIN feeds ON feed_follows.feed_id = feeds.id;
 SELECT feed_follows.*, feeds.name AS feed, users.name AS name
 FROM feed_follows
 INNER JOIN users on feed_follows.user_id = users.id
-INNER JOIN feeds ON feed_follows.feed_id = feeds.id;
+INNER JOIN feeds ON feed_follows.feed_id = feeds.id
+WHERE $1 = users.name;
