@@ -15,6 +15,8 @@ WHERE name = $1;
 -- name: ResetDB :exec
 DELETE FROM users;
 DELETE FROM feeds;
+DELETE FROM feed_follows;
+DELETE FROM posts;
 
 -- name: GetUsers :many
 SELECT * FROM users;

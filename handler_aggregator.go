@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/WillKopa/boot_dev_blog_aggregator/internal/database"
+	"github.com/google/uuid"
 )
 
 func handler_aggregator(s *state, cmd command) error {
@@ -58,4 +59,30 @@ func print_feed_response(r *RSSFeed) {
 	for _, item := range(r.Channel.Item) {
 		fmt.Printf(" * %s\n", item.Title)
 	}
+}
+
+func save_feed(s *state, r *RSSFeed, feed database.Feed) error {
+	for _, item := range(r.Channel.Item) {
+		pub_time, err := time.Parse(time.RFC3339, item.PubDate)
+		if err != nil {
+			return fmt.Errorf("error parsing time: %v\nerror: %v", item.PubDate, err)
+		}
+		params := database.CreatePostParams{
+			ID: uuid.New(),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+			PublishedAt: pub_time,
+			Url: item.Link,
+			Title: item.Title,
+			Description: item.Description,
+			FeedID: feed.ID,
+		}
+		post, err := s.db.CreatePost(context.Background(), params)
+		if err != nil {
+			fmt.Printf("error saving post: %v\n", err)
+		} else {
+			fmt.Printf("Post:\n%v\n", post)
+		}
+	}
+	return nil
 }
