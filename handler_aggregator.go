@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"strings"
+	// "strings"
 	"time"
 
 	"github.com/WillKopa/boot_dev_blog_aggregator/internal/database"
@@ -49,21 +49,20 @@ func scrapeFeeds(s *state, cmd command) error {
 		return fmt.Errorf("error fetching feed from url: %v", err)
 	}
 	
-	print_feed_response(feed)
-	return nil
+	return save_feed(s, feed, next_feed)
 }
 
-func print_feed_response(r *RSSFeed) {
-	line_break := strings.Repeat("-", 20)
-	fmt.Printf("Feed: %s\n%s\n%s\n", r.Channel.Title, line_break, line_break)
-	for _, item := range(r.Channel.Item) {
-		fmt.Printf(" * %s\n", item.Title)
-	}
-}
+// func print_feed_response(r *RSSFeed) {
+// 	line_break := strings.Repeat("-", 20)
+// 	fmt.Printf("Feed: %s\n%s\n%s\n", r.Channel.Title, line_break, line_break)
+// 	for _, item := range(r.Channel.Item) {
+// 		fmt.Printf(" * %s\n", item.Title)
+// 	}
+// }
 
 func save_feed(s *state, r *RSSFeed, feed database.Feed) error {
 	for _, item := range(r.Channel.Item) {
-		pub_time, err := time.Parse(time.RFC3339, item.PubDate)
+		pub_time, err := time.Parse(time.RFC1123Z, item.PubDate)
 		if err != nil {
 			return fmt.Errorf("error parsing time: %v\nerror: %v", item.PubDate, err)
 		}
@@ -81,7 +80,7 @@ func save_feed(s *state, r *RSSFeed, feed database.Feed) error {
 		if err != nil {
 			fmt.Printf("error saving post: %v\n", err)
 		} else {
-			fmt.Printf("Post:\n%v\n", post)
+			fmt.Printf("Saved Post: %v\n", post.Title)
 		}
 	}
 	return nil
