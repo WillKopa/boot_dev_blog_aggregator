@@ -53,7 +53,8 @@ func scrapeFeeds(s *state, cmd command) error {
 }
 
 func print_feed_response(r *RSSFeed) {
-	fmt.Printf("Feed: %s\n%s", r.Channel.Title, strings.Repeat("-", 20))
+	line_break := strings.Repeat("-", 20)
+	fmt.Printf("Feed: %s\n%s\n%s\n", r.Channel.Title, line_break, line_break)
 	for _, item := range(r.Channel.Item) {
 		fmt.Printf(" * %s\n", item.Title)
 	}
